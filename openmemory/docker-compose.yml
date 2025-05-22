@@ -8,9 +8,14 @@ services:
 
   openmemory-mcp:
     image: mem0/openmemory-mcp
-    build: api/
+    build:
+      context: api/
+      dockerfile: Dockerfile
     environment:
-      - USER
+      - USER=${USER:-brendan}
+      - OLLAMA_BASE_URL=http://host.docker.internal:11434
+      - EMBEDDING_MODEL=mxbai-embed-large
+      - EMBEDDING_DIMS=768
     env_file:
       - api/.env
     depends_on:
@@ -32,8 +37,10 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
-      - NEXT_PUBLIC_USER_ID=${USER}
+      - NEXT_PUBLIC_API_URL=http://localhost:8765
+      - NEXT_PUBLIC_USER_ID=${USER:-brendan}
+    depends_on:
+      - openmemory-mcp
 
 volumes:
   mem0_storage:

@@ -1,5 +1,7 @@
 {
   "dependencies": {
-    "install-mcp": "^1.0.6"
+    "eventsource": "^3.0.7",
+    "install-mcp": "^1.0.6",
+    "mem0ai": "^2.1.25"
   }
 }

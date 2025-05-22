@@ -32,14 +32,14 @@ def get_memory_client(custom_instructions: str = None):
                     "collection_name": "openmemory",
                     "host": "mem0_store",
                     "port": 6333,
-                    "embedding_model_dims": 768
+                    "embedding_model_dims": int(os.getenv("EMBEDDING_DIMS", "768"))
                 }
             },
             "llm": {
                 "provider": "ollama",
                 "config": {
                     "model": "llama2",
-                    "ollama_base_url": "http://host.docker.internal:11434",
+                    "ollama_base_url": os.getenv("OLLAMA_BASE_URL", "http://host.docker.internal:11434"),
                     "temperature": 0.7,
                     "max_tokens": 2000
                 }
@@ -47,9 +47,9 @@ def get_memory_client(custom_instructions: str = None):
             "embedder": {
                 "provider": "ollama",
                 "config": {
-                    "model": "nomic-embed-text",
-                    "ollama_base_url": "http://host.docker.internal:11434",
-                    "embedding_dims": 768
+                    "model": os.getenv("EMBEDDING_MODEL", "mxbai-embed-large"),
+                    "ollama_base_url": os.getenv("OLLAMA_BASE_URL", "http://host.docker.internal:11434"),
+                    "embedding_dims": int(os.getenv("EMBEDDING_DIMS", "768"))
                 }
             }
         }

@@ -1,74 +1,69 @@
 # OpenMemory
 
-OpenMemory is your personal memory layer for LLMs - private, portable, and open-source. Your memories live locally, giving you complete control over your data. Build AI applications with personalized memories while keeping your data secure.
-
-![OpenMemory](https://github.com/user-attachments/assets/3c701757-ad82-4afa-bfbe-e049c2b4320b)
-
-## Easy Setup
-
-### Prerequisites
-- Docker
-- OpenAI API Key
-
-You can quickly run OpenMemory by running the following command:
-
-```bash
-curl -sL https://raw.githubusercontent.com/mem0ai/mem0/main/openmemory/run.sh | bash
-```
-
-You should set the `OPENAI_API_KEY` as a global environment variable:
-
-```bash
-export OPENAI_API_KEY=your_api_key
-```
-
-You can also set the `OPENAI_API_KEY` as a parameter to the script:
-
-```bash
-curl -sL https://raw.githubusercontent.com/mem0ai/mem0/main/openmemory/run.sh | OPENAI_API_KEY=your_api_key bash
-```
+This project is containerized using Docker and Docker Compose. All services run in containers for consistency and ease of deployment.
 
 ## Prerequisites
 
-- Docker and Docker Compose
-- Python 3.9+ (for backend development)
-- Node.js (for frontend development)
-- OpenAI API Key (required for LLM interactions, run `cp api/.env.example api/.env` then change **OPENAI_API_KEY** to yours)
+- Docker
+- Docker Compose
+- Ollama (for local embeddings)
 
-## Quickstart
+## Building and Running
 
-You can run the project using the following two commands:
-```bash
-make build # builds the mcp server and ui
-make up  # runs openmemory mcp server and ui
-```
+1. **Build the containers:**
 
-After running these commands, you will have:
-- OpenMemory MCP server running at: http://localhost:8765 (API documentation available at http://localhost:8765/docs)
-- OpenMemory UI running at: http://localhost:3000
+   ```sh
+   docker-compose build --parallel
+   ```
 
-## Project Structure
+2. **Pull the Ollama model:**
 
-- `api/` - Backend APIs + MCP server
-- `ui/` - Frontend React application
+   ```sh
+   ollama pull mxbai-embed-large
+   ```
 
-## Contributing
+3. **Run the services:**
 
-We are a team of developers passionate about the future of AI and open-source software. With years of experience in both fields, we believe in the power of community-driven development and are excited to build tools that make AI more accessible and personalized.
+   ```sh
+   docker-compose up
+   ```
 
-We welcome all forms of contributions:
-- Bug reports and feature requests
-- Documentation improvements
-- Code contributions
-- Testing and feedback
-- Community support
+   This will start the following services:
+   - `mem0_store`: Qdrant vector store
+   - `openmemory-mcp`: MCP server (using Ollama for embeddings)
+   - `openmemory-ui`: Next.js UI
 
-How to contribute:
+4. **Access the UI:**
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b openmemory/feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin openmemory/feature/amazing-feature`)
-5. Open a Pull Request
+   Open your browser and navigate to `http://localhost:3000`.
 
-Join us in building the future of AI memory management! Your contributions help make OpenMemory better for everyone.
+## Configuration
+
+- **Environment Variables:**
+
+   - `NEXT_PUBLIC_API_URL`: URL for the MCP server (default: `http://localhost:8765`).
+   - `USER`: User ID for the MCP client.
+   - `OLLAMA_BASE_URL`: URL for the Ollama server (default: `http://host.docker.internal:11434`).
+   - `EMBEDDING_MODEL`: Ollama embedding model (default: `mxbai-embed-large`).
+   - `EMBEDDING_DIMS`: Embedding dimensions (default: `768`).
+
+   These can be set in a `.env` file or passed directly to Docker Compose.
+
+## Development
+
+- **API:**
+
+   The API is built using FastAPI and runs in a container. The source code is mounted as a volume for live reloading.
+
+- **UI:**
+
+   The UI is built using Next.js and runs in a container. The source code is mounted as a volume for live reloading.
+
+## Troubleshooting
+
+- If you encounter issues with the `install-mcp` package, ensure you are using the correct Node.js image and that the package is properly installed.
+- Check the Docker logs for any errors or warnings.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
